@@ -4,7 +4,7 @@ from django.db import models
 class Trade(models.Model):
 	ticker = models.CharField(max_length=10)
 	price = models.DecimalField(max_digits=11, decimal_places=2)
-	trade_date = models.DateTimeField()
+	trade_date = models.DateField()
 	shares = models.IntegerField(default=0)
 	# a negative amount means a sale
 
