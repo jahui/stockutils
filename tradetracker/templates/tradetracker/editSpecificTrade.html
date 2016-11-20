@@ -7,17 +7,18 @@
 		<a href="{% url 'tradetracker:editTrades'%}">Edit</a>
 	</div>
 	<div class="content">
-		<form action="{% url 'tradetracker:saveTrade' %}" method="post">
+		<form action="{% url 'tradetracker:changeTrade' %}" method="post">
 		{% csrf_token %}
 			<label for="ticker">Ticker: </label>
-			<input type="text" name="ticker"><br>
+			<input type="text" name="ticker" value="{{selected_trade.ticker}}"><br>
 			<label for="price">Price: </label>
-			<input type="number" name="price" step="0.01"><br>
+			<input type="number" name="price" step="0.01" value="{{selected_trade.price}}"><br>
 			<label for="shares">No. of Shares: </label>
-			<input type="number" name="shares"><br>
+			<input type="number" name="shares" value="{{selected_trade.shares}}"><br>
 			<label for="date">Date: </label>
-			<input type="date" name="tradedate"><br>
-			<input type="submit" value="Add">
+			<input type="date" name="tradedate" value="{{format_date}}"><br>
+			<input type="hidden" name="selectedTrade" value="{{selected_trade.id}}">
+			<input type="submit" value="Submit">
 		</form>
 
 		{% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}

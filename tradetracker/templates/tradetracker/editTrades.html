@@ -22,19 +22,26 @@
 				<td>{{trade.price}}</td>
 				<td>{{trade.shares}}</td>
 				<td>{{trade.trade_date}}</td>
+				<td>
+					<form action="{% url 'tradetracker:deleteTrade' %}" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="selectedTrade" value="{{trade.id}}">
+						<input type="submit" value="Delete">
+					</form>
+				</td>
+				<td>
+					<form action="{% url 'tradetracker:editSpecificTrade' %}" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="selectedTrade" value="{{trade.id}}">
+						<input type="submit" value="Edit">
+					</form>
+				</td>
 			</tr>
 		{% endfor %}
 		</table>
 	{% else %}
-	    <p><strong>No trades are available to view.</strong></p>
+	    <p><strong>No trades are available to edit.</strong></p>
 	{% endif %}
-	</div>
-	<div>
-		<div class="fixedinfo">
-			{% if total_earnings %}
-				<strong>Total Amount Earned:</strong> {{total_earnings}}
-			{% endif %}
-		</div>
 	</div>
 </div>
 </body>

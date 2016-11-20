@@ -1,6 +1,6 @@
 /* The side navigation menu */
 .sidenav {
-    height: 50%; /* 100% Full-height */
+    height: 100%; /* 100% Full-height */
     /*position: fixed; /* Stay in place */
     float: left;
     top: 0;
@@ -20,7 +20,17 @@
     transition: 0.3s
 }
 
+.fixedinfo {
+    right: 0;
+    position: fixed;
+    padding: 10px;
+}
+
 .content {
     float: left;
-    padding: 5px;
+    padding: 10px;
+}
+
+.content td {
+    padding: 10px 30px;
 }
