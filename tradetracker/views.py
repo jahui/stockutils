@@ -7,7 +7,10 @@ from datetime import date
 # Create your views here.
 def viewTrades(request):
 	trade_list = Trade.objects.all()
-	context = {'trade_list' : trade_list}
+	total_earnings = 0
+	for trade in trade_list:
+		total_earnings += trade.price * -trade.shares
+	context = {'trade_list' : trade_list, 'total_earnings' : total_earnings}
 	return render(request, 'tradetracker/viewTrades.html', context)
 
 def addTrades(request):

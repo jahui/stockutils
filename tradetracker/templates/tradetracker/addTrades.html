@@ -1,14 +1,24 @@
-<form action="{% url 'tradetracker:saveTrade' %}" method="post">
-{% csrf_token %}
-	<label for="ticker">Ticker: </label>
-	<input type="text" name="ticker"><br>
-	<label for="price">Price: </label>
-	<input type="number" name="price" step="0.01"><br>
-	<label for="shares">No. of Shares: </label>
-	<input type="number" name="shares"><br>
-	<label for="date">Date: </label>
-	<input type="date" name="tradedate"><br>
-	<input type="submit" value="Add">
-</form>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'tradetracker/style.css' %}" />
+<div class="contentWrapper">
+	<div class="sidenav">
+		<a href="{% url 'tradetracker:editTrades'%}">Edit</a>
+		<a href="{% url 'tradetracker:addTrades'%}">Add</a>
+	</div>
+	<div class="content">
+		<form action="{% url 'tradetracker:saveTrade' %}" method="post">
+		{% csrf_token %}
+			<label for="ticker">Ticker: </label>
+			<input type="text" name="ticker"><br>
+			<label for="price">Price: </label>
+			<input type="number" name="price" step="0.01"><br>
+			<label for="shares">No. of Shares: </label>
+			<input type="number" name="shares"><br>
+			<label for="date">Date: </label>
+			<input type="date" name="tradedate"><br>
+			<input type="submit" value="Add">
+		</form>
 
-{% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}
+		{% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}
+	</div>
+</div>

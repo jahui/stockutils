@@ -1,20 +1,32 @@
-{% if trade_list %}
-	<table>
-		<tr>
-			<th>Ticker</th>
-			<th>Price</th>
-			<th>Shares</th>
-			<th>Date</th>
-		</tr>
-	{% for trade in trade_list %}
-		<tr>
-			<td>{{trade.ticker}}</td>
-			<td>{{trade.price}}</td>
-			<td>{{trade.shares}}</td>
-			<td>{{trade.trade_date}}</td>
-		</tr>
-	{% endfor %}
-	</table>
-{% else %}
-    <p>No trades are available.</p>
-{% endif %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'tradetracker/style.css' %}" />
+<div class="contentWrapper">
+	<div class="sidenav">
+		<a href="{% url 'tradetracker:editTrades'%}">Edit</a>
+		<a href="{% url 'tradetracker:addTrades'%}">Add</a>
+	</div>
+	<div class="content">
+	{% if trade_list %}
+		<table>
+			<tr>
+				<th>Ticker</th>
+				<th>Price</th>
+				<th>Shares</th>
+				<th>Date</th>
+			</tr>
+		{% for trade in trade_list %}
+			<tr>
+				<td>{{trade.ticker}}</td>
+				<td>{{trade.price}}</td>
+				<td>{{trade.shares}}</td>
+				<td>{{trade.trade_date}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		<br>
+		<strong>Total Amount Earned:</strong> {{total_earnings}}
+	{% else %}
+	    <p>No trades are available.</p>
+	{% endif %}
+	</div>
+</div>
