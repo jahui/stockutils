@@ -1,40 +1,46 @@
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'tradetracker/style.css' %}" />
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static 'tradetracker/style.css' %}" />
+	<title>View Trades</title>
+</head>
 <body>
-<div class="mainwrapper">
-	<div class="sidenav">
-		<a href="{% url 'tradetracker:viewTrades'%}">View</a>
-		<a href="{% url 'tradetracker:addTrades'%}">Add</a>
-		<a href="{% url 'tradetracker:editTrades'%}">Edit</a>
+	<div class="topbar">
+		<header>View Trades</header>
 	</div>
-	<div class="content">
-	{% if trade_list %}
-		<table>
-			<tr>
-				<th>Ticker</th>
-				<th>Price</th>
-				<th>Shares</th>
-				<th>Date</th>
-			</tr>
-		{% for trade in trade_list %}
-			<tr>
-				<td>{{trade.ticker}}</td>
-				<td>{{trade.price}}</td>
-				<td>{{trade.shares}}</td>
-				<td>{{trade.trade_date}}</td>
-			</tr>
-		{% endfor %}
-		</table>
-	{% else %}
-	    <p><strong>No trades are available to view.</strong></p>
-	{% endif %}
-	</div>
-	<div>
-		<div class="fixedinfo">
-			{% if total_earnings %}
-				<strong>Total Amount Earned:</strong> {{total_earnings}}
-			{% endif %}
+	<div class="mainwrapper">
+		<div class="sidenav">
+			<a href="{% url 'tradetracker:viewTrades'%}">View</a>
+			<a href="{% url 'tradetracker:addTrades'%}">Add</a>
+			<a href="{% url 'tradetracker:editTrades'%}">Edit</a>
+		</div>
+		<div class="content">
+		{% if trade_list %}
+			<table>
+				<tr>
+					<th>Ticker</th>
+					<th>Price</th>
+					<th>Shares</th>
+					<th>Date</th>
+				</tr>
+			{% for trade in trade_list %}
+				<tr>
+					<td>{{trade.ticker}}</td>
+					<td>{{trade.price}}</td>
+					<td>{{trade.shares}}</td>
+					<td>{{trade.trade_date}}</td>
+				</tr>
+			{% endfor %}
+			</table>
+		{% else %}
+		    <p><strong>No trades are available to view.</strong></p>
+		{% endif %}
+		</div>
+		<div>
+			<div class="fixedinfo">
+				{% if total_earnings %}
+					<strong>Total Amount Earned:</strong> {{total_earnings}}
+				{% endif %}
+			</div>
 		</div>
 	</div>
-</div>
 </body>

@@ -1,4 +1,18 @@
 /* The side navigation menu */
+
+.topbar{
+    background-color: #111;
+    font-family: "Tahoma";
+    color: #f1f1f1;
+}
+
+.topbar header{
+    padding-left: 90px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 20px;
+}
+
 .sidenav {
     height: 100%; /* 100% Full-height */
     /*position: fixed; /* Stay in place */
@@ -34,3 +48,9 @@
 .content td {
     padding: 10px 30px;
 }
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
