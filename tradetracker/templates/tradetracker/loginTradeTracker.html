@@ -1,0 +1,20 @@
+{% extends 'tradetracker/tradeTrackerBase.html' %}
+
+
+{% block headtitle %} Login {% endblock %}
+{% block bodyheader %} Login {% endblock %}
+
+{% block content %}
+	<form action="{% url 'tradetracker:processLogin' %}" method="post">
+		{% csrf_token %}
+		<label for="username">User: </label>
+		<input type="text" name="username"><br>
+		<label for="password">Password: </label>
+		<input type="password" name="userpassword"><br>
+		<input type="submit" value="Login">
+	</form>
+
+	{% if error %}
+		<strong>{{error}}</strong>
+	{% endif %}
+{% endblock %}

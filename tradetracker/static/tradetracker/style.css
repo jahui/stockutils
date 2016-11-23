@@ -4,13 +4,24 @@
     background-color: #111;
     font-family: "Tahoma";
     color: #f1f1f1;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.topbar div{
+    display: inline;
 }
 
 .topbar header{
+    display: inline;  
     padding-left: 90px;
-    padding-top: 10px;
-    padding-bottom: 10px;
     font-size: 20px;
+}
+
+.topbar p{
+    font-size: 12px;
+    float: right;
+    padding-right: 10px;
 }
 
 .sidenav {

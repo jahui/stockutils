@@ -4,7 +4,10 @@ from . import views
 
 app_name = 'tradetracker'
 urlpatterns = [
-	url(r'^$', views.viewTrades, name='index'),
+	url(r'^login$', views.loginTrades, name='login'),
+	url(r'^process_login', views.processLogin, name='processLogin'),
+	url(r'^register', views.registerAccount, name='register'),
+	url(r'^create_account', views.processCreateAccount, name='processCreateAccount'),
 	url(r'^view/', views.viewTrades, name='viewTrades'),
 	url(r'^edit/', views.editTrades, name='editTrades'),
 	url(r'^add/', views.addTrades, name='addTrades'),

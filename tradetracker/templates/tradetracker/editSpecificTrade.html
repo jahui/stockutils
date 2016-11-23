@@ -1,34 +1,22 @@
-{% load static %}
-<head>
-	<link rel="stylesheet" type="text/css" href="{% static 'tradetracker/style.css' %}" />
-	<title>Edit Trade</title>
-</head>
-<body>
-	<div class="topbar">
-		<header>Edit Trade</header>
-	</div>
-	<div class="contentWrapper">
-		<div class="sidenav">
-			<a href="{% url 'tradetracker:viewTrades'%}">View</a>
-			<a href="{% url 'tradetracker:addTrades'%}">Add</a>
-			<a href="{% url 'tradetracker:editTrades'%}">Edit</a>
-		</div>
-		<div class="content">
-			<form action="{% url 'tradetracker:changeTrade' %}" method="post">
-			{% csrf_token %}
-				<label for="ticker">Ticker: </label>
-				<input type="text" name="ticker" value="{{selected_trade.ticker}}"><br>
-				<label for="price">Price: </label>
-				<input type="number" name="price" step="0.01" value="{{selected_trade.price}}"><br>
-				<label for="shares">No. of Shares: </label>
-				<input type="number" name="shares" value="{{selected_trade.shares}}"><br>
-				<label for="date">Date: </label>
-				<input type="date" name="tradedate" value="{{format_date}}"><br>
-				<input type="hidden" name="selectedTrade" value="{{selected_trade.id}}">
-				<input type="submit" value="Submit">
-			</form>
+{% extends 'tradetracker/tradeTrackerBase.html' %}
 
-			{% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}
-		</div>
-	</div>
-</body>
+{% block headtitle %} Edit Trade {% endblock %}
+{% block bodyheader %} Edit Trade {% endblock %}
+
+{% block content %}	
+	<form action="{% url 'tradetracker:changeTrade' %}" method="post">
+	{% csrf_token %}
+		<label for="ticker">Ticker: </label>
+		<input type="text" name="ticker" value="{{selected_trade.ticker}}"><br>
+		<label for="price">Price: </label>
+		<input type="number" name="price" step="0.01" value="{{selected_trade.price}}"><br>
+		<label for="shares">No. of Shares: </label>
+		<input type="number" name="shares" value="{{selected_trade.shares}}"><br>
+		<label for="date">Date: </label>
+		<input type="date" name="tradedate" value="{{format_date}}"><br>
+		<input type="hidden" name="selectedTrade" value="{{selected_trade.id}}">
+		<input type="submit" value="Submit">
+	</form>
+
+	{% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}
+{% endblock %}

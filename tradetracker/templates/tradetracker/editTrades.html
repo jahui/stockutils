@@ -1,53 +1,41 @@
-{% load static %}
-<head>
-	<link rel="stylesheet" type="text/css" href="{% static 'tradetracker/style.css' %}" />
-	<title>Edit Trades</title>
-</head>
-<body>
-	<div class="topbar">
-		<header>Edit Trades</header>
-	</div>
-	<div class="mainwrapper">
-		<div class="sidenav">
-			<a href="{% url 'tradetracker:viewTrades'%}">View</a>
-			<a href="{% url 'tradetracker:addTrades'%}">Add</a>
-			<a href="{% url 'tradetracker:editTrades'%}">Edit</a>
-		</div>
-		<div class="content">
-		{% if trade_list %}
-			<table>
-				<tr>
-					<th>Ticker</th>
-					<th>Price</th>
-					<th>Shares</th>
-					<th>Date</th>
-				</tr>
-			{% for trade in trade_list %}
-				<tr>
-					<td>{{trade.ticker}}</td>
-					<td>{{trade.price}}</td>
-					<td>{{trade.shares}}</td>
-					<td>{{trade.trade_date}}</td>
-					<td>
-						<form action="{% url 'tradetracker:deleteTrade' %}" method="post">
-							{% csrf_token %}
-							<input type="hidden" name="selectedTrade" value="{{trade.id}}">
-							<input type="submit" value="Delete">
-						</form>
-					</td>
-					<td>
-						<form action="{% url 'tradetracker:editSpecificTrade' %}" method="post">
-							{% csrf_token %}
-							<input type="hidden" name="selectedTrade" value="{{trade.id}}">
-							<input type="submit" value="Edit">
-						</form>
-					</td>
-				</tr>
-			{% endfor %}
-			</table>
-		{% else %}
-		    <p><strong>No trades are available to edit.</strong></p>
-		{% endif %}
-		</div>
-	</div>
-</body>
+{% extends 'tradetracker/tradeTrackerBase.html' %}
+
+{% block headtitle %} Edit Trades {% endblock %}
+{% block bodyheader %} Edit Trades {% endblock %}
+
+{% block content %}
+	{% if trade_list %}
+		<table>
+			<tr>
+				<th>Ticker</th>
+				<th>Price</th>
+				<th>Shares</th>
+				<th>Date</th>
+			</tr>
+		{% for trade in trade_list %}
+			<tr>
+				<td>{{trade.ticker}}</td>
+				<td>{{trade.price}}</td>
+				<td>{{trade.shares}}</td>
+				<td>{{trade.trade_date}}</td>
+				<td>
+					<form action="{% url 'tradetracker:deleteTrade' %}" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="selectedTrade" value="{{trade.id}}">
+						<input type="submit" value="Delete">
+					</form>
+				</td>
+				<td>
+					<form action="{% url 'tradetracker:editSpecificTrade' %}" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="selectedTrade" value="{{trade.id}}">
+						<input type="submit" value="Edit">
+					</form>
+				</td>
+			</tr>
+		{% endfor %}
+		</table>
+	{% else %}
+		<p><strong>No trades are available to edit.</strong></p>
+	{% endif %}
+{% endblock %}		

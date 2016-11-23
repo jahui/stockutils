@@ -1,0 +1,22 @@
+{% extends 'tradetracker/tradeTrackerBase.html' %}
+
+
+{% block headtitle %} Register Account {% endblock %}
+{% block bodyheader %} Register Account {% endblock %}
+
+{% block content %}
+	<form action="{% url 'tradetracker:processCreateAccount' %}" method="post">
+		{% csrf_token %}
+		<label for="username">User: </label>
+		<input type="text" name="username"><br>
+		<label for="password">Password: </label>
+		<input type="password" name="userpassword"><br>
+		<label for="email">Email: </label>
+		<input type="text" name="useremail">
+		<input type="submit" value="Register">
+	</form>
+
+	{% if error %}
+		<strong>{{error}}</strong>
+	{% endif %}
+{% endblock %}

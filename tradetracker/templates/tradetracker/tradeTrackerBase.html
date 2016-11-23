@@ -1,0 +1,34 @@
+{% load static %}
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static 'tradetracker/style.css' %}" />
+	<title>{% block headtitle %}{% endblock %}</title>
+</head>
+<body>
+	<div class = "topbar">
+		<div>	
+			<header>{% block bodyheader %}{% endblock %}</header>			
+		</div>
+		<div>
+			{% if current_user %}
+				<p>Account: {{current_user}}</p>
+			{% endif %}
+		</div>
+	</div>
+	<div class="mainwrapper">
+		<div class="sidenav">
+			<a href="{% url 'tradetracker:viewTrades'%}">View</a>
+			<a href="{% url 'tradetracker:addTrades'%}">Add</a>
+			<a href="{% url 'tradetracker:editTrades'%}">Edit</a>
+		</div>
+		<div class="content">
+		{% block content %}
+		{% endblock %}
+		</div>
+		<div>
+			<div class="fixedinfo">
+				{% block fixedinfo %}
+				{% endblock %}
+			</div>
+		</div>
+	</div>
+</body>
