@@ -8,6 +8,7 @@ urlpatterns = [
 	url(r'^process_login', views.processLogin, name='processLogin'),
 	url(r'^register', views.registerAccount, name='register'),
 	url(r'^create_account', views.processCreateAccount, name='processCreateAccount'),
+	url(r'^logout', views.logoutTrades, name='logout'),
 	url(r'^view/', views.viewTrades, name='viewTrades'),
 	url(r'^edit/', views.editTrades, name='editTrades'),
 	url(r'^add/', views.addTrades, name='addTrades'),

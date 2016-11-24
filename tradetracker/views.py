@@ -33,9 +33,16 @@ def processCreateAccount(request):
 	user.save()
 	return HttpResponseRedirect(reverse('tradetracker:viewTrades'))
 
+@login_required(login_url='/trades/logout')
+def logoutTrades(request):
+	logout(request)
+	return HttpResponseRedirect(reverse('tradetracker:viewTrades'))
+
 @login_required(login_url='/trades/login')
 def viewTrades(request):
-	trade_list = Trade.objects.all()
+	current_user = request.user
+	trade_list = current_user.trade_set.all()
+	#trade_list = Trade.objects.all()
 	total_earnings = 0
 	for trade in trade_list:
 		total_earnings += trade.price * -trade.shares
@@ -49,8 +56,24 @@ def addTrades(request):
 		{'current_user' : request.user.username})
 
 @login_required
+def saveTrade(request):
+	current_user = request.user
+	ticker = request.POST['ticker']
+	trade_date = request.POST['tradedate']
+	price = request.POST['price']
+	shares = request.POST['shares']
+	if ticker and trade_date and price and shares:
+		trade = current_user.trade_set.create(ticker=ticker, trade_date=trade_date, price=price, shares=shares)
+		#trade.save()
+		return HttpResponseRedirect(reverse('tradetracker:viewTrades'))
+	else:
+		return render(request, 'tradetracker/addTrades.html', 
+			{'error_message' : "All fields must be filled!", 'current_user' : request.user.username})
+
+@login_required
 def editTrades(request):
-	trade_list = Trade.objects.all()
+	current_user = request.user
+	trade_list = current_user.trade_set.all()
 	total_earnings = 0
 	for trade in trade_list:
 		total_earnings += trade.price * -trade.shares
@@ -60,44 +83,39 @@ def editTrades(request):
 
 @login_required
 def editSpecificTrade(request):
-	selected_trade = Trade.objects.get(pk=request.POST['selectedTrade'])
-	# date needs to be formatted to properly default
-	raw_date = selected_trade.trade_date
-	# comes in format: Nov. 19, 2016, needs to be YYYY-MM-DD
-	format_date = raw_date.isoformat()
-	return render(request, 'tradetracker/editSpecificTrade.html', 
-		{'selected_trade' : selected_trade, 'format_date' : format_date, 
-			'current_user' : request.user.username})
+	current_user = request.user
+	selected_trade = current_user.trade_set.get(pk=request.POST['selectedTrade'])
 
-@login_required
-def saveTrade(request):
-	ticker = request.POST['ticker']
-	trade_date = request.POST['tradedate']
-	price = request.POST['price']
-	shares = request.POST['shares']
-	if ticker and trade_date and price and shares:
-		trade = Trade(ticker=ticker, trade_date=trade_date, price=price, shares=shares)
-		trade.save()
-		return HttpResponseRedirect(reverse('tradetracker:viewTrades'))
+	if selected_trade:
+		# date needs to be formatted to properly default
+		raw_date = selected_trade.trade_date
+		# comes in format: Nov. 19, 2016, needs to be YYYY-MM-DD
+		format_date = raw_date.isoformat()
+		return render(request, 'tradetracker/editSpecificTrade.html', 
+			{'selected_trade' : selected_trade, 'format_date' : format_date, 
+				'current_user' : request.user.username})
 	else:
-		return render(request, 'tradetracker/addTrades.html', 
-			{'error_message' : "All fields must be filled!", 'current_user' : request.user.username})
-
-@login_required
-def deleteTrade(request):
-	selected_trade = Trade.objects.get(pk=request.POST['selectedTrade'])
-	selected_trade.delete()
-	return HttpResponseRedirect(reverse('tradetracker:viewTrades'))
+		#rebuild the editTrades page with the error message
+		current_user = request.user
+		trade_list = current_user.trade_set.all()
+		total_earnings = 0
+		for trade in trade_list:
+			total_earnings += trade.price * -trade.shares
+		context = {'trade_list' : trade_list, 'total_earnings' : total_earnings, 
+			'current_user' : request.user.username, 'error_message' : "Invalid trade selected!"}
+		return render(request, 'tradetracker/editTrades.html', context)
 
 @login_required
 def changeTrade(request):
-	selected_trade = Trade.objects.get(pk=request.POST['selectedTrade'])
+	current_user = request.user
+	selected_trade = current_user.trade_set.get(pk=request.POST['selectedTrade'])
+	#selected_trade = Trade.objects.get(pk=request.POST['selectedTrade'])
 	ticker = request.POST['ticker']
 	trade_date = request.POST['tradedate']
 	price = request.POST['price']
 	shares = request.POST['shares']
 
-	if ticker and trade_date and price and shares:
+	if ticker and trade_date and price and shares and selected_trade:
 		selected_trade.ticker = ticker
 		selected_trade.price = price
 		selected_trade.shares = shares
@@ -108,3 +126,13 @@ def changeTrade(request):
 		return render(request, 'tradetracker/editSpecificTrade.html', 
 			{'selected_trade': selected_trade, 'error_message' : "All fields must be filled!", 
 				'current_user' : request.user.username})
+
+@login_required
+def deleteTrade(request):
+	current_user = request.user
+	selected_trade = current_user.trade_set.get(pk=request.POST['selectedTrade'])
+	#selected_trade = Trade.objects.get(pk=request.POST['selectedTrade'])
+	if selected_trade:
+		selected_trade.delete()
+	# todo: error message for this?
+	return HttpResponseRedirect(reverse('tradetracker:viewTrades'))

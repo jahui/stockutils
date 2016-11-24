@@ -38,4 +38,5 @@
 	{% else %}
 		<p><strong>No trades are available to edit.</strong></p>
 	{% endif %}
+	{% if error_message %} <p><strong>{{ error_message }}</strong></p>{% endif %}
 {% endblock %}		
