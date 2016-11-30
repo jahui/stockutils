@@ -51,6 +51,10 @@
     padding: 10px;
 }
 
+.fixedinfo td {
+    padding: 5px 10px;
+}
+
 .content {
     float: left;
     padding: 10px;

@@ -31,5 +31,22 @@
 	{% if total_earnings %}
 		<strong>Total Amount Earned:</strong> {{total_earnings}} <br>
 	{% endif %}
+	{% if portfolio_list %}
+		<strong>Portfolio</strong>
+		<table>
+			<tr>
+				<th>Ticker</th>
+				<th>Shares</th>
+				<th>Average Cost</th>
+			</tr>
+		{% for stock in portfolio_list %}
+			<tr>
+				<td>{{stock.ticker}}</td>
+				<td>{{stock.shares}}</td>
+				<td>{{stock.average_cost}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	{% endif %}
 {% endblock %}
 			
