@@ -62,7 +62,7 @@ def addTrades(request):
 @login_required(login_url='/trades/login')
 def saveTrade(request):
 	current_user = request.user
-	ticker = request.POST['ticker']
+	ticker = request.POST['ticker'].upper()
 	trade_date = request.POST['tradedate']
 	price = Decimal(request.POST['price'])
 	shares = int(request.POST['shares'])
@@ -137,17 +137,64 @@ def changeTrade(request):
 	current_user = request.user
 	selected_trade = current_user.trade_set.get(pk=request.POST['selectedTrade'])
 	#selected_trade = Trade.objects.get(pk=request.POST['selectedTrade'])
-	ticker = request.POST['ticker']
+	ticker = request.POST['ticker'].upper()
 	trade_date = request.POST['tradedate']
 	price = request.POST['price']
 	shares = request.POST['shares']
 
 	if ticker and trade_date and price and shares and selected_trade:
+		# save values for rollback
+		old_ticker = selected_trade.ticker
+		old_price = selected_trade.price
+		old_shares = selected_trade.shares
+		old_date = selected_trade.trade_date
+
 		selected_trade.ticker = ticker
 		selected_trade.price = price
 		selected_trade.shares = shares
 		selected_trade.trade_date = trade_date
 		selected_trade.save()
+
+		# todo: what if the edit changes the ticker?
+		trades = current_user.trade_set.filter(ticker=ticker)
+		avg_cost = 0
+		num_bought = 0
+		num_sold = 0
+		for t in trades:
+			if t.shares > 0:
+				avg_cost += t.price * t.shares
+				num_bought += t.shares
+			else:
+				num_sold += t.shares
+		net_shares_count = num_bought + num_sold
+		if net_shares_count > 0:
+			try:
+				avg_cost /= num_bought
+				portfolio_entry = current_user.portfoliostock_set.get(ticker=ticker)
+				portfolio_entry.average_cost = avg_cost
+				portfolio_entry.shares = net_shares_count
+				portfolio_entry.save()
+			except ObjectDoesNotExist:
+				current_user.portfoliostock_set.create(ticker=ticker, average_cost=avg_cost, shares=net_shares_count)
+		elif net_shares_count == 0:
+			try:
+				portfolio_entry = current_user.portfoliostock_set.get(ticker=old_ticker)
+				portfolio_entry.delete()
+			except ObjectDoesNotExist:
+				# do nothing
+				nothing = 1
+		else:
+			# rollback the trade save
+			selected_trade.ticker = old_ticker
+			selected_trade.price = old_price
+			selected_trade.shares = old_shares
+			selected_trade.trade_date = old_date
+			selected_trade.save()
+			return render(request, 'tradetracker/editSpecificTrade.html', 
+				{'selected_trade': selected_trade, 'error_message' : "Invalid no. of shares!", 
+				'current_user' : request.user.username})
+
+		
 		return HttpResponseRedirect(reverse('tradetracker:viewTrades'))
 	else:
 		return render(request, 'tradetracker/editSpecificTrade.html', 
@@ -160,6 +207,46 @@ def deleteTrade(request):
 	selected_trade = current_user.trade_set.get(pk=request.POST['selectedTrade'])
 	#selected_trade = Trade.objects.get(pk=request.POST['selectedTrade'])
 	if selected_trade:
+		# old values for rollback
+		old_ticker = selected_trade.ticker
+		old_price = selected_trade.price
+		old_shares = selected_trade.shares
+		old_date = selected_trade.trade_date
+
 		selected_trade.delete()
+
+		trades = current_user.trade_set.filter(ticker=old_ticker)
+		avg_cost = 0
+		num_bought = 0
+		num_sold = 0
+		for t in trades:
+			if t.shares > 0:
+				avg_cost += t.price * t.shares
+				num_bought += t.shares
+			else:
+				num_sold += t.shares
+		net_shares_count = num_bought + num_sold
+		if net_shares_count > 0:
+			try:
+				avg_cost /= num_bought
+				portfolio_entry = current_user.portfoliostock_set.get(ticker=old_ticker)
+				portfolio_entry.average_cost = avg_cost
+				portfolio_entry.shares = net_shares_count
+				portfolio_entry.save()
+			except ObjectDoesNotExist:
+				current_user.portfoliostock_set.create(ticker=old_ticker, average_cost=avg_cost, shares=net_shares_count)
+		elif net_shares_count == 0:
+			try:
+				portfolio_entry = current_user.portfoliostock_set.get(ticker=old_ticker)
+				portfolio_entry.delete()
+			except ObjectDoesNotExist:
+				# do nothing
+				nothing = 1
+		else:
+			# recreate the old trade
+			trade = current_user.trade_set.create(ticker=old_ticker, trade_date=old_date, price=old_price, shares=old_shares)
+			return render(request, 'tradetracker/editSpecificTrade.html', 
+				{'selected_trade': selected_trade, 'error_message' : "Invalid no. of shares!", 
+				'current_user' : request.user.username})
 	# todo: error message for this?
 	return HttpResponseRedirect(reverse('tradetracker:viewTrades'))
