@@ -12,6 +12,7 @@
 				<th>Price</th>
 				<th>Shares</th>
 				<th>Date</th>
+				<th>Current Price</th>
 			</tr>
 		{% for trade in trade_list %}
 			<tr>
@@ -19,6 +20,7 @@
 				<td>{{trade.price}}</td>
 				<td>{{trade.shares}}</td>
 				<td>{{trade.trade_date}}</td>
+				<td>tbd</td>
 			</tr>
 		{% endfor %}
 		</table>
