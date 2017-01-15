@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Trade
 from datetime import date
 from decimal import Decimal
+import pandas_datareader.data as web
 
 # Create your views here.
 
@@ -45,12 +46,15 @@ def viewTrades(request):
 	current_user = request.user
 	trade_list = current_user.trade_set.all()
 	portfolio_list = current_user.portfoliostock_set.all()
+	prices = {}
 	#trade_list = Trade.objects.all()
 	total_earnings = 0
 	for trade in trade_list:
 		total_earnings += trade.price * -trade.shares
+		if not trade.ticker in prices:
+			prices[trade.ticker] = web.get_quote_yahoo(trade.ticker)["last"].get(trade.ticker)
 	context = {'trade_list' : trade_list, 'total_earnings' : total_earnings, 
-		'current_user' : request.user.username, 'portfolio_list' : portfolio_list}
+		'current_user' : request.user.username, 'portfolio_list' : portfolio_list, 'prices' : prices}
 	return render(request, 'tradetracker/viewTrades.html', context)
 
 

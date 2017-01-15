@@ -1,5 +1,5 @@
 {% extends 'tradetracker/tradeTrackerBase.html' %}
-
+{% load tradetracker_extras %}
 
 {% block headtitle %} View Trades {% endblock %}
 {% block bodyheader %} View Trades {% endblock %}
@@ -20,7 +20,7 @@
 				<td>{{trade.price}}</td>
 				<td>{{trade.shares}}</td>
 				<td>{{trade.trade_date}}</td>
-				<td>tbd</td>
+				<td>{{ prices|get_value:trade.ticker }}</td>
 			</tr>
 		{% endfor %}
 		</table>

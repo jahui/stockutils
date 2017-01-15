@@ -4,6 +4,7 @@ from . import views
 
 app_name = 'tradetracker'
 urlpatterns = [
+	url(r'^$', views.viewTrades, name='index'),
 	url(r'^login$', views.loginTrades, name='login'),
 	url(r'^process_login', views.processLogin, name='processLogin'),
 	url(r'^register', views.registerAccount, name='register'),
